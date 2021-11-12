@@ -26,7 +26,6 @@ const Authors = ({ show }) => {
             variables: { name: authorName, born: authorBirthyear }
         })
 
-        setAuthorName('')
         setAuthorBirthyear('')
     }
 
@@ -36,7 +35,6 @@ const Authors = ({ show }) => {
             <table>
                 <tbody>
                     <tr>
-                        <th></th>
                         <th>
                         born
                         </th>
@@ -57,10 +55,12 @@ const Authors = ({ show }) => {
             <form onSubmit={updateAuthor}>
                 <div>
                     name
-                    <input
+                    <select
                         value={authorName}
-                        onChange={({ target }) => setAuthorName(target.value)}
-                    />
+                        onChange={({ target }) => setAuthorName(target.value)}>
+                        {authors.map(a =>
+                            <option key={a.id} value={a.name}>{a.name}</option>)}
+                    </select>
                 </div>
                 <div>
                     born
