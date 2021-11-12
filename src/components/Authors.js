@@ -1,9 +1,12 @@
-import React from 'react'
-import { useQuery } from '@apollo/client'
-import { ALL_AUTHORS } from '../queries'
+import React, { useState } from 'react'
+import { useMutation, useQuery } from '@apollo/client'
+import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries'
 
 const Authors = ({ show }) => {
+    const [authorName, setAuthorName] = useState('')
+    const [authorBirthyear, setAuthorBirthyear] = useState('')
     const result = useQuery(ALL_AUTHORS)
+    const [editAuthor] = useMutation(EDIT_AUTHOR)
     if (!show) {
         return null
     }
@@ -14,6 +17,18 @@ const Authors = ({ show }) => {
         </div>
     }
     const authors = result.data.allAuthors
+
+    const updateAuthor = async (event) => {
+        event.preventDefault()
+        console.log(authorName)
+        console.log(authorBirthyear)
+        await editAuthor({
+            variables: { name: authorName, born: authorBirthyear }
+        })
+
+        setAuthorName('')
+        setAuthorBirthyear('')
+    }
 
     return (
         <div>
@@ -38,7 +53,25 @@ const Authors = ({ show }) => {
                     )}
                 </tbody>
             </table>
-
+            <h2>Set birthyear</h2>
+            <form onSubmit={updateAuthor}>
+                <div>
+                    name
+                    <input
+                        value={authorName}
+                        onChange={({ target }) => setAuthorName(target.value)}
+                    />
+                </div>
+                <div>
+                    born
+                    <input
+                        type='number'
+                        value={authorBirthyear}
+                        onChange={({ target }) => setAuthorBirthyear(Number(target.value))}
+                    />
+                </div>
+                <button type='submit'>update author</button>
+            </form>
         </div>
     )
 }
